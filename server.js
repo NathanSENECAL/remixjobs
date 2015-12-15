@@ -108,6 +108,17 @@ router.route('/companies')	//pour retourner la liste des companies
 				res.json(companies);
 			})
 	});
+	
+/*router.route('/tag/:job_tag')
+
+    .get(function(req, res) {
+        Job.find(function(err, jobs) {
+            if (err)
+                res.send(err);
+			if else("job_tag" == job.tags)
+				res.json(jobs);
+        });
+    });*/
 
 app.get('/scrape', function(req, res){
 
@@ -132,6 +143,14 @@ request(url, function(error, response, html){
 				job.description = " ";
 				job.contract = data.find('.contract').attr("data-contract-type");
 				job.date = data.find('.job-details-right').text();
+				
+				var res = job.date.split(" ");
+				var mois = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc.","heures"]
+				var monthnb = mois.indexOf(res[1]) + 1;
+				if (monthnb == 13)
+					job.date = new Date();
+				job.date = res[0]+"/"+monthnb+"/"+res[2];
+				
 				data.find('.tag').each(function(){
 					var tag=$(this).attr("data-tag-name");
 					job.tags.push(tag);
